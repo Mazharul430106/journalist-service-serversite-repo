@@ -16,13 +16,23 @@ const run = async ()=>{
     try{
         const serviceCollection = client.db('journalistService').collection('services');
 
-        // get data from database 
+        // get three service data from database 
+        app.get('/services', async (req, res)=>{
+            const query = {};
+            const cursor = serviceCollection.find(query).limit(3);
+            const services = await cursor.toArray();
+            res.send(services);
+        })
+
+        
+        // get all service data from database 
         app.get('/services', async (req, res)=>{
             const query = {};
             const cursor = serviceCollection.find(query);
             const services = await cursor.toArray();
             res.send(services);
         })
+
 
     }
     finally{
