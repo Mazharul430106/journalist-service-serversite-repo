@@ -17,6 +17,15 @@ const run = async () => {
         const serviceCollection = client.db('journalistService').collection('services');
         const reviewCollection = client.db('journalistService').collection('reviews');
 
+
+        // stored service data in database.
+        app.post('/services', async (req, res)=> {
+            const service = req.body;
+            const result = await serviceCollection.insertOne(service)
+            res.send(result);
+        })
+
+
         // get all service data from database 
         app.get('/services', async (req, res) => {
             const query = {};
@@ -50,11 +59,33 @@ const run = async () => {
 
         // get reviews data from database 
         app.get('/reviews', async (req, res)=> {
-            const query = {};
+            let query = {};
+            if(req.query.email){
+                query = {
+                    email: req.query.email
+                }
+            }
             const cursor = reviewCollection.find(query);
             const reviews = await cursor.toArray();
             res.send(reviews);
         })
+
+        // update reviews data from database .
+        // app.patch('/reviews/:id', async(req, res)=>{
+        //     const id = req.params.id;
+        //     const query = {_id: ObjectId(id)};
+        //     const updateDoc = {
+        //         $set:{
+
+        //         }
+        //     }
+        //     const result = await reviewCollection.updateOne(query, updateDoc);
+        // })
+
+
+
+
+
 
         // delete review form database.
         app.delete('/reviews/:id', async (req, res)=>{
