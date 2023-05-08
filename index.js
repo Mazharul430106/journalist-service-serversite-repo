@@ -19,7 +19,7 @@ const run = async () => {
 
 
         // stored service data in database.
-        app.post('/services', async (req, res)=> {
+        app.post('/services', async (req, res) => {
             const service = req.body;
             const result = await serviceCollection.insertOne(service)
             res.send(result);
@@ -35,32 +35,33 @@ const run = async () => {
         })
 
         // get three service data from database 
-         app.get('/service', async (req, res) => {
+        app.get('/service', async (req, res) => {
             const query = {};
             const cursor = serviceCollection.find(query);
-            const services = await cursor.limit(3).toArray();
+            const services = await cursor.limit(4).toArray();
             res.send(services);
         })
 
         // find one service data in all services from database
-        app.get('/services/:id', async (req, res)=> {
+        app.get('/services/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const service = await serviceCollection.findOne(query);
             res.send(service);
         })
 
         // post reviews data form database 
-        app.post('/reviews', async (req, res)=>{
+        app.post('/reviews', async (req, res) => {
             const review = req.body;
             const result = await reviewCollection.insertOne(review);
             res.send(result);
         })
 
-        // get reviews data from database 
-        app.get('/reviews', async (req, res)=> {
+
+        // get reviews data in specfic email from database 
+        app.get('/reviews', async (req, res) => {
             let query = {};
-            if(req.query.email){
+            if (req.query.email) {
                 query = {
                     email: req.query.email
                 }
@@ -70,27 +71,35 @@ const run = async () => {
             res.send(reviews);
         })
 
-        // update reviews data from database .
-        // app.patch('/reviews/:id', async(req, res)=>{
-        //     const id = req.params.id;
-        //     const query = {_id: ObjectId(id)};
-        //     const updateDoc = {
-        //         $set:{
 
-        //         }
-        //     }
-        //     const result = await reviewCollection.updateOne(query, updateDoc);
-        // })
+        // get specific data of specific id from the database
+        app.get('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };
+            const result = await reviewCollection.findOne(query);
+            res.send(result);
+        })
 
-
-
-
+        
+        // update reviews data from database.
+        app.patch('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const updateInfo = req.body;
+            const updateDoc = {
+                $set: {
+                    review: updateInfo.review
+                }
+            }
+            const result = await reviewCollection.updateOne(query, updateDoc);
+            res.send(result);
+        })
 
 
         // delete review form database.
-        app.delete('/reviews/:id', async (req, res)=>{
+        app.delete('/reviews/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: ObjectId(id)};
+            const query = { _id: ObjectId(id) };
             const result = await reviewCollection.deleteOne(query);
             res.send(result);
         })
