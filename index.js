@@ -88,7 +88,7 @@ const run = async () => {
             const updateInfo = req.body;
             const updateDoc = {
                 $set: {
-                    review: updateInfo.review
+                    userReview: updateInfo.userReview
                 }
             }
             const result = await reviewCollection.updateOne(query, updateDoc);
